@@ -45,22 +45,8 @@
         const { useState, useEffect, useMemo, useRef } = React;
 
         // --- ICONS (SVG Direct) ---
-        // Dibina manual untuk mengelakkan ralat CDN
         const Icon = ({ children, size = 24, className = "" }) => (
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width={size} 
-                height={size} 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                className={className}
-            >
-                {children}
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
         );
 
         const Printer = (props) => <Icon {...props}><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></Icon>;
@@ -83,6 +69,10 @@
         const XCircle = (props) => <Icon {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></Icon>;
         const MessageSquare = (props) => <Icon {...props}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></Icon>;
         const Loader2 = (props) => <Icon {...props} className={`${props.className} animate-spin`}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></Icon>;
+        const LayoutList = (props) => <Icon {...props}><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/><path d="M14 4h7"/><path d="M14 9h7"/><path d="M14 15h7"/><path d="M14 20h7"/></Icon>;
+        const PenTool = (props) => <Icon {...props}><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/></Icon>;
+        const ArrowLeft = (props) => <Icon {...props}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></Icon>;
+        const Eye = (props) => <Icon {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></Icon>;
 
         // --- SUPABASE CONFIGURATION ---
         const supabaseUrl = 'https://qaleplvuyfbpjwfscdct.supabase.co';
@@ -196,7 +186,7 @@
             if (!isVisible) return null;
             const isError = type === 'error';
             return (
-                <div className="fixed top-5 right-5 z-50 animate-bounce-in">
+                <div className="fixed top-5 right-5 z-50 animate-bounce-in print:hidden">
                     <div className={`border-l-4 ${isError ? 'border-red-500' : 'border-green-500'} bg-white text-slate-700 px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3`}>
                         {isError ? <XCircle className="text-red-500" size={24} /> : <CheckCircle className="text-green-500" size={24} />}
                         <div>
@@ -493,13 +483,92 @@
             </div>
         );
 
+        // --- NEW REPORT LIST TAB COMPONENT ---
+        const ReportListComponent = ({ onSelectReport, t, isDarkMode }) => {
+            const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+            const [reports, setReports] = useState([]);
+            const [loading, setLoading] = useState(false);
+
+            useEffect(() => {
+                fetchReports();
+            }, [selectedDate]);
+
+            const fetchReports = async () => {
+                setLoading(true);
+                const { data, error } = await supabase
+                    .from('laporan_mbwa')
+                    .select('*')
+                    .eq('tarikh', selectedDate)
+                    .order('masa', { ascending: true });
+                
+                if (error) console.error("Error fetching reports:", error);
+                else setReports(data || []);
+                setLoading(false);
+            };
+
+            const mapDbToState = (dbRecord) => ({
+                namaPentadbir: dbRecord.nama_pentadbir,
+                jawatan: dbRecord.jawatan,
+                tarikh: dbRecord.tarikh,
+                masa: dbRecord.masa,
+                lokasi: dbRecord.lokasi,
+                lokasiCatatan: dbRecord.lokasi_catatan,
+                skor: dbRecord.skor,
+                catatanBahagianA: dbRecord.catatan_bahagian_a || { kebersihan: '', disiplin: '', keselamatan: '', pengurusan: '', keceriaan: '' },
+                ulasan: dbRecord.ulasan
+            });
+
+            return (
+                <div className={`p-6 space-y-6 ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold flex items-center gap-2">
+                            <LayoutList size={24} className="text-blue-500"/> Senarai Cetakan Laporan
+                        </h2>
+                    </div>
+
+                    <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm dark:bg-slate-800 dark:border-slate-700">
+                        <label className="font-semibold text-sm">Pilih Tarikh:</label>
+                        <input 
+                            type="date" 
+                            value={selectedDate} 
+                            onChange={(e) => setSelectedDate(e.target.value)}
+                            className={`p-2 border rounded-lg ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-50 border-slate-300'}`}
+                        />
+                    </div>
+
+                    {loading ? (
+                        <div className="flex justify-center py-10"><Loader2 size={40} className="animate-spin text-blue-500"/></div>
+                    ) : reports.length === 0 ? (
+                        <div className="text-center py-10 opacity-50 border-2 border-dashed border-slate-300 rounded-xl">
+                            <p>Tiada laporan dijumpai pada tarikh ini.</p>
+                        </div>
+                    ) : (
+                        <div className="grid gap-4">
+                            {reports.map((report) => (
+                                <div key={report.id} className={`p-4 rounded-xl border flex justify-between items-center shadow-sm hover:shadow-md transition-all ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-blue-100 hover:bg-blue-50'}`}>
+                                    <div>
+                                        <p className="font-bold text-lg">{report.nama_pentadbir}</p>
+                                        <p className="text-sm opacity-70 flex items-center gap-2">
+                                            <Clock size={14}/> {report.masa} &nbsp;|&nbsp; <MapPin size={14}/> {report.lokasi}
+                                        </p>
+                                    </div>
+                                    <button 
+                                        onClick={() => onSelectReport(mapDbToState(report))}
+                                        className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 shadow-sm font-medium text-sm"
+                                    >
+                                        <Eye size={16}/> Papar & Cetak
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
         // --- MAIN APP COMPONENT ---
         const MBWAReport = () => {
             const getInitialData = () => {
-                try {
-                    const saved = localStorage.getItem('mbwaFormData');
-                    if (saved) return JSON.parse(saved);
-                } catch (e) { console.error(e); }
                 return {
                     namaPentadbir: '',
                     jawatan: 'Guru Besar',
@@ -513,99 +582,45 @@
                 };
             };
 
+            const [activeTab, setActiveTab] = useState('input'); // 'input' or 'list'
             const [formData, setFormData] = useState(getInitialData);
             const [lang, setLang] = useState('bm');
             const [isDarkMode, setIsDarkMode] = useState(false);
             const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
-            const [isVisible, setIsVisible] = useState(false);
             const [isSaving, setIsSaving] = useState(false);
 
             const t = TRANSLATIONS[lang];
 
-            useEffect(() => {
-                localStorage.setItem('mbwaFormData', JSON.stringify(formData));
-            }, [formData]);
-
-            useEffect(() => {
-                setIsVisible(true);
-            }, []);
-
+            // Functions for managing form data
             const updateField = (name, value) => {
-                if (name === 'ulasan' && value.length > 500) return;
                 setFormData(prev => ({ ...prev, [name]: value }));
             };
-
-            const updateScore = (id, value) => {
-                setFormData(prev => ({
-                    ...prev,
-                    skor: { ...prev.skor, [id]: parseInt(value) }
-                }));
-            };
-
-            const updateAspectComment = (id, value) => {
-                setFormData(prev => ({
-                    ...prev,
-                    catatanBahagianA: { ...prev.catatanBahagianA, [id]: value }
-                }));
-            };
-
+            const updateScore = (id, value) => setFormData(prev => ({...prev, skor: {...prev.skor, [id]: parseInt(value)}}));
+            const updateAspectComment = (id, value) => setFormData(prev => ({...prev, catatanBahagianA: {...prev.catatanBahagianA, [id]: value}}));
+            const handleReset = () => { if(window.confirm(t.resetConfirm)) setFormData(getInitialData()); };
+            
             const handleSave = async () => {
-                if (!formData.namaPentadbir.trim()) {
-                    showToast(t.validationName, 'error');
-                    return;
-                }
-
+                if (!formData.namaPentadbir.trim()) { showToast(t.validationName, 'error'); return; }
                 setIsSaving(true);
-
                 try {
-                    const { error } = await supabase
-                        .from('laporan_mbwa')
-                        .insert([
-                            {
-                                nama_pentadbir: formData.namaPentadbir,
-                                jawatan: formData.jawatan,
-                                tarikh: formData.tarikh,
-                                masa: formData.masa,
-                                lokasi: formData.lokasi,
-                                lokasi_catatan: formData.lokasiCatatan,
-                                skor: formData.skor,
-                                catatan_bahagian_a: formData.catatanBahagianA,
-                                ulasan: formData.ulasan
-                            },
-                        ]);
-
+                    const { error } = await supabase.from('laporan_mbwa').insert([{
+                        nama_pentadbir: formData.namaPentadbir,
+                        jawatan: formData.jawatan,
+                        tarikh: formData.tarikh,
+                        masa: formData.masa,
+                        lokasi: formData.lokasi,
+                        lokasi_catatan: formData.lokasiCatatan,
+                        skor: formData.skor,
+                        catatan_bahagian_a: formData.catatanBahagianA,
+                        ulasan: formData.ulasan
+                    }]);
                     if (error) throw error;
                     showToast(t.saveSuccess, 'success');
-                } catch (error) {
-                    console.error('Ralat Supabase:', error);
-                    showToast(`${t.saveError} (${error.message})`, 'error');
-                } finally {
-                    setIsSaving(false);
-                }
+                } catch (error) { console.error('Ralat:', error); showToast(`${t.saveError} (${error.message})`, 'error'); } 
+                finally { setIsSaving(false); }
             };
 
-            const handleReset = () => {
-                if (window.confirm(t.resetConfirm)) {
-                    setFormData({
-                        namaPentadbir: '',
-                        jawatan: 'Guru Besar',
-                        tarikh: new Date().toISOString().split('T')[0],
-                        masa: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
-                        lokasi: '',
-                        lokasiCatatan: '',
-                        skor: { kebersihan: 3, disiplin: 3, keselamatan: 3, pengurusan: 3, keceriaan: 3 },
-                        catatanBahagianA: { kebersihan: '', disiplin: '', keselamatan: '', pengurusan: '', keceriaan: '' },
-                        ulasan: ''
-                    });
-                    localStorage.removeItem('mbwaFormData');
-                }
-            };
-
-            const showToast = (message, type = 'success') => {
-                setToast({ show: true, message, type });
-                setTimeout(() => setToast(prev => ({ ...prev, show: false })), 4000);
-            };
-
+            const showToast = (message, type = 'success') => { setToast({ show: true, message, type }); setTimeout(() => setToast(prev => ({ ...prev, show: false })), 4000); };
             const calculations = useMemo(() => {
                 const totalScore = Object.values(formData.skor).reduce((a, b) => a + b, 0);
                 const maxScore = ASPEK_PENILAIAN.length * 5;
@@ -613,17 +628,14 @@
                 return { totalScore, maxScore, percentage };
             }, [formData.skor]);
 
-            const actions = {
-                setLang,
-                setIsDarkMode,
-                setToast: showToast,
-                closeToast: () => setToast(prev => ({ ...prev, show: false })),
-                updateField,
-                updateScore,
-                updateAspectComment,
-                handleSave,
-                handleReset
+            const loadReportForPrinting = (data) => {
+                setFormData(data);
+                setActiveTab('input'); // Switch back to form view to show details
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showToast("Laporan dimuatkan. Sila tekan butang Cetak di bawah.", "success");
             };
+
+            const actions = { setLang, setIsDarkMode, setToast: showToast, closeToast: () => setToast(prev => ({ ...prev, show: false })), updateField, updateScore, updateAspectComment, handleSave, handleReset };
 
             return (
                 <React.Fragment>
@@ -631,36 +643,47 @@
 
                     <div className={`min-h-screen p-4 md:p-8 transition-colors duration-500 ease-in-out ${isDarkMode ? 'bg-slate-900 text-slate-100' : 'bg-sky-50 text-slate-700'}`}>
                         
-                        {/* Floating Controls */}
+                        {/* Global Controls */}
                         <div className="fixed top-4 right-4 z-40 flex gap-2 print:hidden">
-                            <button 
-                                onClick={() => actions.setLang(l => l === 'bm' ? 'en' : 'bm')}
-                                className={`p-2 rounded-full shadow-lg transition-all hover:scale-105 ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-slate-700'}`}
-                                title="Tukar Bahasa"
-                            >
-                                <span className="font-bold text-xs flex items-center gap-1"><Globe size={16}/> {lang.toUpperCase()}</span>
-                            </button>
-                            <button 
-                                onClick={() => actions.setIsDarkMode(!isDarkMode)}
-                                className={`p-2 rounded-full shadow-lg transition-all hover:scale-105 ${isDarkMode ? 'bg-yellow-400 text-slate-900' : 'bg-slate-700 text-white'}`}
-                                title="Tukar Tema"
-                            >
-                                {isDarkMode ? <Sun size={18}/> : <Moon size={18}/>}
-                            </button>
+                            <button onClick={() => setLang(l => l === 'bm' ? 'en' : 'bm')} className={`p-2 rounded-full shadow-lg ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-slate-700'}`}><Globe size={16}/></button>
+                            <button onClick={() => setIsDarkMode(!isDarkMode)} className={`p-2 rounded-full shadow-lg ${isDarkMode ? 'bg-yellow-400 text-slate-900' : 'bg-slate-700 text-white'}`}>{isDarkMode ? <Sun size={18}/> : <Moon size={18}/>}</button>
                         </div>
 
-                        {/* Main Card */}
+                        {/* Main Container */}
                         <div className={`max-w-[210mm] mx-auto shadow-2xl rounded-2xl overflow-hidden animate-enter transition-colors duration-300 print:shadow-none print:max-w-full print:rounded-none ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
-                            <HeaderSection t={t} isDarkMode={isDarkMode} />
                             
-                            <div className="p-8 space-y-8 print:p-0 print:space-y-6">
-                                <AdminInfoForm formData={formData} updateField={actions.updateField} t={t} isDarkMode={isDarkMode} />
-                                <ScoreTable formData={formData} updateScore={actions.updateScore} updateAspectComment={actions.updateAspectComment} t={t} isDarkMode={isDarkMode} calculations={calculations} />
-                                <CommentsSection formData={formData} updateField={actions.updateField} t={t} isDarkMode={isDarkMode} />
-                                <FooterSection formData={formData} actions={actions} t={t} isDarkMode={isDarkMode} />
-                            </div>
+                            <HeaderSection t={t} isDarkMode={isDarkMode} />
 
-                            <ActionButtons actions={actions} t={t} isDarkMode={isDarkMode} isSaving={isSaving} />
+                            {/* TAB NAVIGATION (Hidden in Print) */}
+                            <div className="flex border-b border-gray-200 print:hidden">
+                                <button 
+                                    onClick={() => setActiveTab('input')}
+                                    className={`flex-1 py-3 font-bold text-sm flex items-center justify-center gap-2 transition-colors ${activeTab === 'input' ? (isDarkMode ? 'bg-slate-700 text-blue-400 border-b-2 border-blue-400' : 'bg-blue-50 text-blue-600 border-b-2 border-blue-600') : (isDarkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-500 hover:bg-slate-50')}`}
+                                >
+                                    <PenTool size={16}/> Borang Baru / Paparan
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('list')}
+                                    className={`flex-1 py-3 font-bold text-sm flex items-center justify-center gap-2 transition-colors ${activeTab === 'list' ? (isDarkMode ? 'bg-slate-700 text-blue-400 border-b-2 border-blue-400' : 'bg-blue-50 text-blue-600 border-b-2 border-blue-600') : (isDarkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-500 hover:bg-slate-50')}`}
+                                >
+                                    <LayoutList size={16}/> Senarai Cetakan
+                                </button>
+                            </div>
+                            
+                            {/* CONTENT AREA */}
+                            {activeTab === 'input' ? (
+                                <React.Fragment>
+                                    <div className="p-8 space-y-8 print:p-0 print:space-y-6">
+                                        <AdminInfoForm formData={formData} updateField={actions.updateField} t={t} isDarkMode={isDarkMode} />
+                                        <ScoreTable formData={formData} updateScore={actions.updateScore} updateAspectComment={actions.updateAspectComment} t={t} isDarkMode={isDarkMode} calculations={calculations} />
+                                        <CommentsSection formData={formData} updateField={actions.updateField} t={t} isDarkMode={isDarkMode} />
+                                        <FooterSection formData={formData} actions={actions} t={t} isDarkMode={isDarkMode} />
+                                    </div>
+                                    <ActionButtons actions={actions} t={t} isDarkMode={isDarkMode} isSaving={isSaving} />
+                                </React.Fragment>
+                            ) : (
+                                <ReportListComponent onSelectReport={loadReportForPrinting} t={t} isDarkMode={isDarkMode} />
+                            )}
                         </div>
                         
                         <div className="text-center mt-8 text-blue-300 text-sm print:hidden font-medium opacity-60">Sistem Pengurusan Sekolah Digital © 2026</div>
