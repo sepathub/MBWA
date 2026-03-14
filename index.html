@@ -980,11 +980,15 @@
         // --- MAIN APP COMPONENT ---
         const MBWAReport = () => {
             const getInitialData = () => {
+                const d = new Date();
+                // Bina format HH:mm secara manual supaya disokong 100% oleh input time
+                const formatMasa = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                
                 return {
                     namaPentadbir: '',
                     jawatan: '',
-                    tarikh: new Date().toISOString().split('T')[0],
-                    masa: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+                    tarikh: d.toISOString().split('T')[0],
+                    masa: formatMasa,
                     lokasi: '',
                     lokasiCatatan: '',
                     skor: { kebersihan: 0, disiplin: 0, keselamatan: 0, pengurusan: 0, keceriaan: 0 },
