@@ -13,11 +13,8 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
     <!-- Babel (untuk JSX) -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
     
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
@@ -42,7 +39,34 @@
 
     <script type="text/babel">
         // --- SETUP ---
-        const { useState, useEffect, useMemo, useRef } = React;
+        const { useState, useEffect, useMemo, useRef, Component } = React;
+
+        // --- ERROR BOUNDARY ---
+        class ErrorBoundary extends Component {
+            constructor(props) {
+                super(props);
+                this.state = { hasError: false, error: null };
+            }
+            static getDerivedStateFromError(error) {
+                return { hasError: true, error };
+            }
+            render() {
+                if (this.state.hasError) {
+                    return (
+                        <div className="min-h-screen flex items-center justify-center bg-slate-100 p-6">
+                            <div className="bg-white p-8 rounded-2xl shadow-xl max-w-lg text-center border-t-4 border-red-500">
+                                <h1 className="text-2xl font-bold text-red-600 mb-4">Ralat Sistem Dikesan</h1>
+                                <p className="text-slate-600 mb-4 text-sm">Sistem gagal dimuatkan. Sila semak ralat di bawah atau pastikan sambungan internet anda stabil.</p>
+                                <div className="bg-slate-100 p-4 rounded-lg text-left text-xs text-red-800 font-mono overflow-auto">
+                                    {this.state.error.toString()}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+                return this.props.children;
+            }
+        }
 
         // --- ICONS (SVG Direct) ---
         const Icon = ({ children, size = 24, className = "" }) => (
@@ -75,13 +99,9 @@
         const Eye = (props) => <Icon {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></Icon>;
         const Trash2 = (props) => <Icon {...props}><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></Icon>;
 
-        // --- SUPABASE CONFIGURATION ---
-        const supabaseUrl = 'https://qaleplvuyfbpjwfscdct.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbGVwbHZ1eWZicGp3ZnNjZGN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5OTgxODMsImV4cCI6MjA4NTU3NDE4M30.XN8wPkQfUmqgUPOiuYVXP_I8FnY1YiWAxKU5B9Wri38';
+        // --- GOOGLE APPS SCRIPT CONFIGURATION ---
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwBCa8fe0qK28SZa3vPBvY7K2L_gBb3IWxTfVsL8sYhcicO7TSTOFufMVZKPLfkdr9OYA/exec';
         
-        // Inisialisasi klien Supabase
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
         // --- DATA & CONSTANTS ---
         const TRANSLATIONS = {
             bm: {
@@ -495,30 +515,43 @@
                 fetchReports();
             }, [selectedDate]);
 
+            // DITUKAR KEPADA GET
             const fetchReports = async () => {
                 setLoading(true);
-                const { data, error } = await supabase
-                    .from('laporan_mbwa')
-                    .select('*')
-                    .eq('tarikh', selectedDate)
-                    .order('masa', { ascending: true });
-                
-                if (error) console.error("Error fetching reports:", error);
-                else setReports(data || []);
+                try {
+                    const response = await fetch(`${GAS_URL}?action=fetch&tarikh=${selectedDate}`);
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        setReports(result.data || []);
+                    } else {
+                        console.error("Error fetching reports:", result.message);
+                        setReports([]);
+                    }
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                    setReports([]);
+                }
                 setLoading(false);
             };
 
+            // DITUKAR KEPADA GET UNTUK MENGELAK ISU PELAYAR WEB BLOK POST REDIRECT
             const handleDelete = async (id) => {
                 if (!window.confirm(t.deleteConfirm || "Adakah anda pasti mahu memadam laporan ini?")) return;
                 
-                const { error } = await supabase.from('laporan_mbwa').delete().eq('id', id);
-                
-                if (error) {
+                try {
+                    const response = await fetch(`${GAS_URL}?action=delete&id=${encodeURIComponent(id)}`);
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        if (onShowToast) onShowToast(t.deleteSuccess || "Laporan berjaya dipadam.", "success");
+                        fetchReports(); 
+                    } else {
+                        throw new Error(result.message || "Ralat tidak diketahui dari pelayan GAS.");
+                    }
+                } catch (error) {
                     console.error("Error deleting:", error);
-                    if (onShowToast) onShowToast(t.deleteError || "Gagal memadam laporan.", "error");
-                } else {
-                    if (onShowToast) onShowToast(t.deleteSuccess || "Laporan berjaya dipadam.", "success");
-                    fetchReports(); // Refresh list
+                    if (onShowToast) onShowToast((t.deleteError || "Gagal memadam laporan.") + " (" + error.message + ")", "error");
                 }
             };
 
@@ -542,7 +575,7 @@
                         </h2>
                     </div>
 
-                    <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm dark:bg-slate-800 dark:border-slate-700">
+                    <div className={`flex items-center gap-4 p-4 rounded-xl border shadow-sm ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'}`}>
                         <label className="font-semibold text-sm">Pilih Tarikh:</label>
                         <input 
                             type="date" 
@@ -591,6 +624,199 @@
             );
         };
 
+        // --- NEW CALENDAR TAB COMPONENT ---
+        const CalendarTabComponent = ({ onSelectReport, t, isDarkMode, onShowToast }) => {
+            const [selectedMonth, setSelectedMonth] = useState(() => {
+                const d = new Date();
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            });
+            const [reports, setReports] = useState([]);
+            const [loading, setLoading] = useState(false);
+            const [activeDate, setActiveDate] = useState(null);
+
+            useEffect(() => {
+                fetchMonthlyReports();
+            }, [selectedMonth]);
+
+            // DITUKAR KEPADA GET
+            const fetchMonthlyReports = async () => {
+                setLoading(true);
+                try {
+                    const response = await fetch(`${GAS_URL}?action=fetch&tarikh=${selectedMonth}`);
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        setReports(result.data || []);
+                        setActiveDate(null); 
+                    } else {
+                        console.error("Error fetching monthly reports:", result.message);
+                        setReports([]);
+                    }
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                    setReports([]);
+                }
+                setLoading(false);
+            };
+
+            // DITUKAR KEPADA GET
+            const handleDelete = async (id) => {
+                if (!window.confirm(t.deleteConfirm || "Adakah anda pasti mahu memadam laporan ini?")) return;
+                
+                try {
+                    const response = await fetch(`${GAS_URL}?action=delete&id=${encodeURIComponent(id)}`);
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        if (onShowToast) onShowToast(t.deleteSuccess || "Laporan berjaya dipadam.", "success");
+                        fetchMonthlyReports(); 
+                    } else {
+                        throw new Error(result.message || "Ralat tidak diketahui dari pelayan GAS.");
+                    }
+                } catch (error) {
+                    console.error("Error deleting:", error);
+                    if (onShowToast) onShowToast((t.deleteError || "Gagal memadam laporan.") + " (" + error.message + ")", "error");
+                }
+            };
+
+            const mapDbToState = (dbRecord) => ({
+                namaPentadbir: dbRecord.nama_pentadbir,
+                jawatan: dbRecord.jawatan,
+                tarikh: dbRecord.tarikh,
+                masa: dbRecord.masa,
+                lokasi: dbRecord.lokasi,
+                lokasiCatatan: dbRecord.lokasi_catatan,
+                skor: dbRecord.skor,
+                catatanBahagianA: dbRecord.catatan_bahagian_a || { kebersihan: '', disiplin: '', keselamatan: '', pengurusan: '', keceriaan: '' },
+                ulasan: dbRecord.ulasan
+            });
+
+            // Logik membina susunan hari kalendar
+            const year = parseInt(selectedMonth.split('-')[0]);
+            const month = parseInt(selectedMonth.split('-')[1]) - 1;
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+
+            const days = [];
+            for (let i = 0; i < firstDayOfMonth; i++) days.push(null);
+            for (let i = 1; i <= daysInMonth; i++) days.push(i);
+
+            const getFormatDate = (d) => `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            
+            const handleDayClick = (d) => {
+                if(!d) return;
+                setActiveDate(getFormatDate(d));
+            };
+
+            const dayNames = ['Ah', 'Is', 'Se', 'Ra', 'Kh', 'Ju', 'Sa'];
+            const selectedDayReports = activeDate ? reports.filter(r => r.tarikh === activeDate) : [];
+
+            return (
+                <div className={`p-6 space-y-6 ${isDarkMode ? 'text-white' : 'text-slate-700'}`}>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold flex items-center gap-2">
+                            <Calendar size={24} className="text-blue-500"/> Kalendar Pemantauan
+                        </h2>
+                    </div>
+
+                    <div className={`flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-xl border shadow-sm ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'}`}>
+                        <label className="font-semibold text-sm whitespace-nowrap">Pilih Bulan:</label>
+                        <input 
+                            type="month" 
+                            value={selectedMonth} 
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                            className={`p-2 border rounded-lg w-full md:w-auto ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-50 border-slate-300'}`}
+                        />
+                        {loading && <Loader2 size={20} className="animate-spin text-blue-500 ml-auto"/>}
+                    </div>
+
+                    {/* Petak Kalendar */}
+                    <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'}`}>
+                        <div className="grid grid-cols-7 gap-1 md:gap-2 mb-2">
+                            {dayNames.map(day => (
+                                <div key={day} className={`text-center font-bold text-xs py-2 ${day === 'Ah' || day === 'Sa' ? 'text-red-500' : ''}`}>
+                                    {day}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="grid grid-cols-7 gap-1 md:gap-2">
+                            {days.map((day, idx) => {
+                                if (!day) return <div key={`empty-${idx}`} className="p-2 md:p-4"></div>;
+                                
+                                const dateStr = getFormatDate(day);
+                                const dayReports = reports.filter(r => r.tarikh === dateStr);
+                                const hasReports = dayReports.length > 0;
+                                const isSelected = activeDate === dateStr;
+                                const isToday = dateStr === new Date().toISOString().split('T')[0];
+
+                                return (
+                                    <div 
+                                        key={day}
+                                        onClick={() => handleDayClick(day)}
+                                        className={`relative p-2 md:p-4 text-center rounded-lg cursor-pointer transition-all flex flex-col items-center justify-center min-h-[50px]
+                                            ${isSelected ? (isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white shadow-md') : 
+                                              isDarkMode ? 'hover:bg-slate-700 text-slate-200' : 'hover:bg-slate-100 text-slate-700'}
+                                            ${isToday && !isSelected ? (isDarkMode ? 'border border-blue-400' : 'border-2 border-blue-400 font-bold') : ''}
+                                        `}
+                                    >
+                                        <span className={`${hasReports ? 'font-bold' : ''}`}>{day}</span>
+                                        {hasReports && (
+                                            <div className="flex gap-1 mt-1 flex-wrap justify-center">
+                                                {dayReports.slice(0, 3).map((_, i) => (
+                                                    <div key={i} className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-green-500'}`}></div>
+                                                ))}
+                                                {dayReports.length > 3 && <span className="text-[10px] leading-none ml-0.5">+</span>}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Senarai Laporan untuk Hari Dipilih */}
+                    {activeDate && (
+                        <div className={`p-4 rounded-xl border animate-enter ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-sky-50 border-sky-100'}`}>
+                            <h3 className="font-bold mb-4 flex items-center gap-2">
+                                <FileText size={18}/> Rekod Laporan: {activeDate}
+                            </h3>
+                            {selectedDayReports.length === 0 ? (
+                                <p className="text-sm opacity-60 italic text-center py-4">Tiada laporan pada tarikh ini.</p>
+                            ) : (
+                                <div className="grid gap-3">
+                                    {selectedDayReports.map((report) => (
+                                        <div key={report.id} className={`p-3 rounded-lg border flex justify-between items-center shadow-sm ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-white border-sky-200'}`}>
+                                            <div>
+                                                <p className="font-bold">{report.nama_pentadbir}</p>
+                                                <p className="text-xs opacity-70 flex items-center gap-2 mt-1">
+                                                    <Clock size={12}/> {report.masa} &nbsp;|&nbsp; <MapPin size={12}/> {report.lokasi}
+                                                </p>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button 
+                                                    onClick={() => onSelectReport(mapDbToState(report))}
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 shadow-sm font-medium text-xs"
+                                                >
+                                                    <Eye size={14}/> Papar
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDelete(report.id)}
+                                                    className="flex items-center gap-1.5 px-2 py-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 shadow-sm font-medium text-xs"
+                                                    title="Padam Laporan"
+                                                >
+                                                    <Trash2 size={14}/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
         // --- MAIN APP COMPONENT ---
         const MBWAReport = () => {
             const getInitialData = () => {
@@ -607,7 +833,7 @@
                 };
             };
 
-            const [activeTab, setActiveTab] = useState('input'); // 'input' or 'list'
+            const [activeTab, setActiveTab] = useState('input'); 
             const [formData, setFormData] = useState(getInitialData);
             const [lang, setLang] = useState('bm');
             const [isDarkMode, setIsDarkMode] = useState(false);
@@ -616,7 +842,6 @@
 
             const t = TRANSLATIONS[lang];
 
-            // Functions for managing form data
             const updateField = (name, value) => {
                 setFormData(prev => ({ ...prev, [name]: value }));
             };
@@ -624,24 +849,47 @@
             const updateAspectComment = (id, value) => setFormData(prev => ({...prev, catatanBahagianA: {...prev.catatanBahagianA, [id]: value}}));
             const handleReset = () => { if(window.confirm(t.resetConfirm)) setFormData(getInitialData()); };
             
+            const generateUniqueId = () => {
+                if (typeof window !== 'undefined' && window.crypto && window.crypto.randomUUID) {
+                    return window.crypto.randomUUID();
+                }
+                return Date.now().toString() + '-' + Math.random().toString(36).substr(2, 9);
+            };
+
             const handleSave = async () => {
                 if (!formData.namaPentadbir.trim()) { showToast(t.validationName, 'error'); return; }
                 setIsSaving(true);
                 try {
-                    const { error } = await supabase.from('laporan_mbwa').insert([{
-                        nama_pentadbir: formData.namaPentadbir,
-                        jawatan: formData.jawatan,
-                        tarikh: formData.tarikh,
-                        masa: formData.masa,
-                        lokasi: formData.lokasi,
-                        lokasi_catatan: formData.lokasiCatatan,
-                        skor: formData.skor,
-                        catatan_bahagian_a: formData.catatanBahagianA,
-                        ulasan: formData.ulasan
-                    }]);
-                    if (error) throw error;
+                    const payload = {
+                        action: 'insert',
+                        data: {
+                            id: generateUniqueId(),
+                            nama_pentadbir: formData.namaPentadbir,
+                            jawatan: formData.jawatan,
+                            tarikh: formData.tarikh,
+                            masa: formData.masa,
+                            lokasi: formData.lokasi,
+                            lokasi_catatan: formData.lokasiCatatan,
+                            skor: formData.skor,
+                            catatan_bahagian_a: formData.catatanBahagianA,
+                            ulasan: formData.ulasan
+                        }
+                    };
+
+                    const response = await fetch(GAS_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload),
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                    });
+                    
+                    const result = await response.json();
+                    if (result.status !== 'success') throw new Error(result.message);
+                    
                     showToast(t.saveSuccess, 'success');
-                } catch (error) { console.error('Ralat:', error); showToast(`${t.saveError} (${error.message})`, 'error'); } 
+                } catch (error) { 
+                    console.error('Ralat:', error); 
+                    showToast(`${t.saveError} (${error.message})`, 'error'); 
+                } 
                 finally { setIsSaving(false); }
             };
 
@@ -655,7 +903,7 @@
 
             const loadReportForPrinting = (data) => {
                 setFormData(data);
-                setActiveTab('input'); // Switch back to form view to show details
+                setActiveTab('input'); 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 showToast("Laporan dimuatkan. Sila tekan butang Cetak di bawah.", "success");
             };
@@ -668,34 +916,36 @@
 
                     <div className={`min-h-screen p-4 md:p-8 transition-colors duration-500 ease-in-out ${isDarkMode ? 'bg-slate-900 text-slate-100' : 'bg-sky-50 text-slate-700'}`}>
                         
-                        {/* Global Controls */}
                         <div className="fixed top-4 right-4 z-40 flex gap-2 print:hidden">
                             <button onClick={() => setLang(l => l === 'bm' ? 'en' : 'bm')} className={`p-2 rounded-full shadow-lg ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-slate-700'}`}><Globe size={16}/></button>
                             <button onClick={() => setIsDarkMode(!isDarkMode)} className={`p-2 rounded-full shadow-lg ${isDarkMode ? 'bg-yellow-400 text-slate-900' : 'bg-slate-700 text-white'}`}>{isDarkMode ? <Sun size={18}/> : <Moon size={18}/>}</button>
                         </div>
 
-                        {/* Main Container */}
                         <div className={`max-w-[210mm] mx-auto shadow-2xl rounded-2xl overflow-hidden animate-enter transition-colors duration-300 print:shadow-none print:max-w-full print:rounded-none ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
                             
                             <HeaderSection t={t} isDarkMode={isDarkMode} />
 
-                            {/* TAB NAVIGATION (Hidden in Print) */}
-                            <div className="flex border-b border-gray-200 print:hidden">
+                            <div className="flex border-b border-gray-200 print:hidden overflow-x-auto">
                                 <button 
                                     onClick={() => setActiveTab('input')}
-                                    className={`flex-1 py-3 font-bold text-sm flex items-center justify-center gap-2 transition-colors ${activeTab === 'input' ? (isDarkMode ? 'bg-slate-700 text-blue-400 border-b-2 border-blue-400' : 'bg-blue-50 text-blue-600 border-b-2 border-blue-600') : (isDarkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-500 hover:bg-slate-50')}`}
+                                    className={`flex-1 min-w-[120px] py-3 font-bold text-sm flex items-center justify-center gap-1 md:gap-2 transition-colors ${activeTab === 'input' ? (isDarkMode ? 'bg-slate-700 text-blue-400 border-b-2 border-blue-400' : 'bg-blue-50 text-blue-600 border-b-2 border-blue-600') : (isDarkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-500 hover:bg-slate-50')}`}
                                 >
-                                    <PenTool size={16}/> Borang Baru / Paparan
+                                    <PenTool size={16}/> <span className="hidden md:inline">Borang Baru / Paparan</span><span className="md:hidden">Borang</span>
                                 </button>
                                 <button 
                                     onClick={() => setActiveTab('list')}
-                                    className={`flex-1 py-3 font-bold text-sm flex items-center justify-center gap-2 transition-colors ${activeTab === 'list' ? (isDarkMode ? 'bg-slate-700 text-blue-400 border-b-2 border-blue-400' : 'bg-blue-50 text-blue-600 border-b-2 border-blue-600') : (isDarkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-500 hover:bg-slate-50')}`}
+                                    className={`flex-1 min-w-[120px] py-3 font-bold text-sm flex items-center justify-center gap-1 md:gap-2 transition-colors ${activeTab === 'list' ? (isDarkMode ? 'bg-slate-700 text-blue-400 border-b-2 border-blue-400' : 'bg-blue-50 text-blue-600 border-b-2 border-blue-600') : (isDarkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-500 hover:bg-slate-50')}`}
                                 >
-                                    <LayoutList size={16}/> Senarai Cetakan
+                                    <LayoutList size={16}/> <span className="hidden md:inline">Senarai Cetakan</span><span className="md:hidden">Senarai</span>
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('calendar')}
+                                    className={`flex-1 min-w-[120px] py-3 font-bold text-sm flex items-center justify-center gap-1 md:gap-2 transition-colors ${activeTab === 'calendar' ? (isDarkMode ? 'bg-slate-700 text-blue-400 border-b-2 border-blue-400' : 'bg-blue-50 text-blue-600 border-b-2 border-blue-600') : (isDarkMode ? 'text-slate-400 hover:bg-slate-700' : 'text-slate-500 hover:bg-slate-50')}`}
+                                >
+                                    <Calendar size={16}/> Kalendar
                                 </button>
                             </div>
                             
-                            {/* CONTENT AREA */}
                             {activeTab === 'input' ? (
                                 <React.Fragment>
                                     <div className="p-8 space-y-8 print:p-0 print:space-y-6">
@@ -706,8 +956,10 @@
                                     </div>
                                     <ActionButtons actions={actions} t={t} isDarkMode={isDarkMode} isSaving={isSaving} />
                                 </React.Fragment>
-                            ) : (
+                            ) : activeTab === 'list' ? (
                                 <ReportListComponent onSelectReport={loadReportForPrinting} t={t} isDarkMode={isDarkMode} onShowToast={showToast} />
+                            ) : (
+                                <CalendarTabComponent onSelectReport={loadReportForPrinting} t={t} isDarkMode={isDarkMode} onShowToast={showToast} />
                             )}
                         </div>
                         
@@ -718,7 +970,11 @@
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<MBWAReport />);
+        root.render(
+            <ErrorBoundary>
+                <MBWAReport />
+            </ErrorBoundary>
+        );
     </script>
 </body>
 </html>
