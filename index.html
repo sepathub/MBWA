@@ -293,7 +293,7 @@
         };
 
         const HeaderSection = ({ t, isDarkMode }) => (
-            <div className="bg-gradient-to-r from-sky-500 via-teal-400 to-lime-400 text-white p-6 relative overflow-hidden print:mb-4 print:p-4 print:rounded-xl">
+            <div className="bg-gradient-to-r from-sky-500 via-teal-400 to-lime-400 text-white p-6 relative overflow-hidden print:mb-2 print:p-4 print:rounded-xl">
                 {/* Latar Belakang SVG Pendidikan */}
                 <div className="absolute top-[-20px] right-[-10px] opacity-20 pointer-events-none transform rotate-12 print:opacity-30">
                     <BookOpen size={180} />
@@ -328,7 +328,7 @@
                     {t.adminInfo}
                 </h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:gap-x-4 print:gap-y-2 print:text-[11pt]">
+                <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4 print:gap-x-4 print:gap-y-2 print:text-[11pt]">
                     <div className="space-y-1">
                         <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 print:text-slate-500 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
                             {t.name}
@@ -386,7 +386,7 @@
                         />
                     </div>
 
-                    <div className="col-span-1 md:col-span-2 space-y-1">
+                    <div className="col-span-1 md:col-span-2 print:col-span-2 space-y-1">
                         <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 print:text-slate-500 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
                             {t.location}
                         </label>
@@ -435,7 +435,7 @@
             const badge = getBadge(percentage);
 
             return (
-                <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:break-inside-avoid print:mt-4 print:p-0 print:border-none print:shadow-none ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-indigo-50/60 border-indigo-100'}`} style={{animationDelay: "0.1s"}}>
+                <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:break-inside-avoid print:mt-2 print:p-0 print:border-none print:shadow-none ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-indigo-50/60 border-indigo-100'}`} style={{animationDelay: "0.1s"}}>
                     
                     {/* Header Seksyen Markah */}
                     <div className={`mb-4 border-b pb-4 print:border-none print:mb-2 print:pb-0 ${isDarkMode ? 'border-slate-600' : 'border-indigo-200'}`}>
@@ -517,7 +517,7 @@
         };
 
         const CommentsSection = ({ formData, updateField, t, isDarkMode }) => (
-            <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:break-inside-avoid print:mt-4 print:p-0 print:border-none print:shadow-none ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-green-50/60 border-green-100'}`} style={{animationDelay: "0.2s"}}>
+            <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:break-inside-avoid print:mt-2 print:p-0 print:border-none print:shadow-none ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-green-50/60 border-green-100'}`} style={{animationDelay: "0.2s"}}>
                 <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 border-b pb-2 print:mb-2 print:pb-1 ${isDarkMode ? 'text-green-300 border-slate-600' : 'text-green-800 border-green-200 print:border-slate-800'}`}>
                     <span className={`p-1.5 rounded-lg print:hidden ${isDarkMode ? 'bg-slate-600 text-green-300' : 'bg-green-100 text-green-600'}`}><FileText size={18} /></span>
                     {t.comments}
@@ -539,7 +539,7 @@
 
         const FooterSection = ({ formData, t, isDarkMode }) => (
             <React.Fragment>
-                <div className="hidden print:flex justify-center items-end mt-8 pt-4 no-break">
+                <div className="hidden print:flex justify-center items-end mt-4 pt-4 no-break">
                     <div className="text-center w-1/2">
                         <div className="mb-2">
                             <p className="font-bold text-sm">{t.adminSign}</p>
