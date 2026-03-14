@@ -58,13 +58,18 @@
         }
 
         @media print {
-            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background-color: white !important; background-image: none !important; }
+            body { 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+                background-color: white !important; 
+                background-image: none !important; 
+            }
             .no-break { break-inside: avoid; }
             .print-hidden { display: none !important; }
-            .print-bg-white { background-color: white !important; }
-            .print-text-black { color: black !important; }
-            .print-border-black { border-color: black !important; }
-            @page { margin: 0.5cm; }
+            @page { 
+                size: A4 portrait;
+                margin: 10mm; 
+            }
         }
     </style>
 </head>
@@ -124,6 +129,7 @@
         const Save = (props) => <Icon {...props}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></Icon>;
         const RefreshCw = (props) => <Icon {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></Icon>;
         const FileText = (props) => <Icon {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></Icon>;
+        const FilePlus = (props) => <Icon {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="12" x2="12" y1="18" y2="12"/><line x1="9" x2="15" y1="15" y2="15"/></Icon>;
         const School = (props) => <Icon {...props}><path d="m4 6 8-4 8 4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M14 22v-4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M18 5v17"/><path d="M6 5v17"/><circle cx="12" cy="9" r="2"/></Icon>;
         const User = (props) => <Icon {...props}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></Icon>;
         const MapPin = (props) => <Icon {...props}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></Icon>;
@@ -142,10 +148,11 @@
         const Loader2 = (props) => <Icon {...props} className={`${props.className} animate-spin`}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></Icon>;
         const LayoutList = (props) => <Icon {...props}><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/><path d="M14 4h7"/><path d="M14 9h7"/><path d="M14 15h7"/><path d="M14 20h7"/></Icon>;
         const PenTool = (props) => <Icon {...props}><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/></Icon>;
-        const Eye = (props) => <Icon {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></Icon>;
         const Trash2 = (props) => <Icon {...props}><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></Icon>;
         const BookOpen = (props) => <Icon {...props}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></Icon>;
         const Star = (props) => <Icon {...props}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Icon>;
+        const EditIcon = (props) => <Icon {...props}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></Icon>;
+        const XIcon = (props) => <Icon {...props}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></Icon>;
 
         // --- GOOGLE APPS SCRIPT CONFIGURATION ---
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwBCa8fe0qK28SZa3vPBvY7K2L_gBb3IWxTfVsL8sYhcicO7TSTOFufMVZKPLfkdr9OYA/exec';
@@ -169,15 +176,16 @@
                 commentPlaceholder: "Contoh: Persekitaran kantin bersih tetapi...",
                 adminSign: "Nama Pentadbir",
                 witnessSign: "Tandatangan Guru Bertugas / Saksi",
-                reset: "Reset",
+                newForm: "Catat Borang Baru",
                 save: "Simpan",
+                update: "Simpan Kemaskini",
                 print: "Cetak / PDF",
                 footer: "Pendidikan Berkualiti Insan Terdidik Negara Sejahtera",
                 validationName: "Sila masukkan Nama Pentadbir sebelum menyimpan.",
                 saveSuccess: "Laporan berjaya disimpan ke pangkalan data!",
                 saveError: "Gagal menyimpan laporan. Sila cuba lagi.",
                 dbLoading: "Sedang menyambung ke pangkalan data...",
-                resetConfirm: "Adakah anda pasti? Semua data akan dipadam.",
+                newFormConfirm: "Buka borang kosong baru? Pastikan anda telah menyimpan rekod paparan ini.",
                 deleteConfirm: "Adakah anda pasti mahu memadam laporan ini?",
                 deleteSuccess: "Laporan berjaya dipadam.",
                 deleteError: "Gagal memadam laporan.",
@@ -208,15 +216,16 @@
                 commentPlaceholder: "Example: Canteen environment is clean but...",
                 adminSign: "Administrator Name",
                 witnessSign: "Duty Teacher / Witness Signature",
-                reset: "Reset",
+                newForm: "New Form",
                 save: "Save",
+                update: "Update Report",
                 print: "Print / PDF",
                 footer: "Quality Education, Educated People, Prosperous Nation",
                 validationName: "Please enter Administrator Name before saving.",
                 saveSuccess: "Report saved to database successfully!",
                 saveError: "Failed to save report. Please try again.",
                 dbLoading: "Connecting to database...",
-                resetConfirm: "Are you sure? All data will be cleared.",
+                newFormConfirm: "Start a new form? Make sure you have saved the current record.",
                 deleteConfirm: "Are you sure you want to delete this report?",
                 deleteSuccess: "Report deleted successfully.",
                 deleteError: "Failed to delete report.",
@@ -278,19 +287,19 @@
         };
 
         const HeaderSection = ({ t, isDarkMode }) => (
-            <div className="bg-gradient-to-r from-sky-500 via-teal-400 to-lime-400 text-white p-6 relative overflow-hidden print:bg-white print:text-black print:border-b print:border-slate-300 print:p-0 print:pb-4 print:mb-6">
+            <div className="bg-gradient-to-r from-sky-500 via-teal-400 to-lime-400 text-white p-6 relative overflow-hidden print:mb-6">
                 {/* Latar Belakang SVG Pendidikan - Penjuru Kanan Atas */}
-                <div className="absolute top-[-20px] right-[-10px] opacity-20 print:hidden pointer-events-none transform rotate-12">
+                <div className="absolute top-[-20px] right-[-10px] opacity-20 pointer-events-none transform rotate-12 print:opacity-30">
                     <BookOpen size={180} />
                 </div>
                 {/* Latar Belakang SVG Maskot Sekolah - Penjuru Kiri Atas */}
-                <div className="absolute bottom-[-30px] left-[10%] opacity-15 print:hidden pointer-events-none transform -rotate-12">
+                <div className="absolute bottom-[-30px] left-[10%] opacity-15 pointer-events-none transform -rotate-12 print:opacity-20">
                     <School size={140} />
                 </div>
                 
                 {/* Tukar susunan dalam mod cetak supaya Logo di Kanan */}
-                <div className="flex items-center gap-6 relative z-10 print:flex-row-reverse print:justify-between print:items-end">
-                    <div className={`p-3 rounded-2xl text-teal-700 shadow-lg print:border print:border-slate-300 print:shadow-none print:p-2 print:rounded-full ${isDarkMode ? 'bg-slate-200' : 'bg-white/95'}`}>
+                <div className="flex items-center gap-6 relative z-10 print:flex-row-reverse print:justify-between print:items-center">
+                    <div className={`p-3 rounded-2xl text-teal-700 shadow-lg print:shadow-none print:p-2 print:rounded-full ${isDarkMode ? 'bg-slate-200' : 'bg-white/95'}`}>
                         <img 
                             src="https://i.postimg.cc/V6LnHkFk/LOGO_SKSE_utk_background_putih_(2).jpg" 
                             alt="Logo Sekolah" 
@@ -298,9 +307,9 @@
                         />
                     </div>
                     <div className="flex-1 print:text-left">
-                        <h1 className="text-3xl font-extrabold uppercase tracking-wider drop-shadow-sm print:text-2xl print:text-black">{t.schoolName}</h1>
-                        <p className="text-teal-50 text-sm font-medium print:text-slate-600 mt-1 print:text-xs">Kod Sekolah: MBA0022 | Tel: 06-552 8803</p>
-                        <div className="mt-3 inline-flex items-center gap-2 bg-yellow-400 text-teal-900 px-3 py-1 rounded-full text-sm font-bold shadow-sm print:bg-transparent print:text-slate-700 print:p-0 print:shadow-none print:mt-1 uppercase print:px-0">
+                        <h1 className="text-3xl font-extrabold uppercase tracking-wider drop-shadow-sm print:text-3xl">{t.schoolName}</h1>
+                        <p className="text-teal-50 text-sm font-medium mt-1 print:text-teal-100">Kod Sekolah: MBA0022 | Tel: 06-552 8803</p>
+                        <div className="mt-3 inline-flex items-center gap-2 bg-yellow-400 text-teal-900 px-3 py-1 rounded-full text-sm font-bold shadow-sm uppercase">
                             <Award size={14} className="print:hidden"/> {t.title}
                         </div>
                     </div>
@@ -309,15 +318,15 @@
         );
 
         const AdminInfoForm = ({ formData, updateField, t, isDarkMode }) => (
-            <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:border-none print:shadow-none print:p-0 ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-blue-50/60 border-blue-100'}`}>
-                <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 border-b pb-2 print:border-none print:mb-2 print:text-black ${isDarkMode ? 'text-blue-300 border-slate-600' : 'text-blue-800 border-blue-200'}`}>
+            <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:break-inside-avoid ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-blue-50/60 border-blue-100'}`}>
+                <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 border-b pb-2 print:mb-4 ${isDarkMode ? 'text-blue-300 border-slate-600' : 'text-blue-800 border-blue-200'}`}>
                     <span className={`p-1.5 rounded-lg print:hidden ${isDarkMode ? 'bg-slate-600 text-blue-300' : 'bg-blue-100 text-blue-600'}`}><User size={18} /></span>
                     {t.adminInfo}
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:gap-4 print:text-sm">
                     <div className="space-y-2">
-                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 print:text-black ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
+                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
                             <User size={14} className="print:hidden"/> {t.name}
                         </label>
                         <div className="relative">
@@ -337,7 +346,7 @@
                     </div>
 
                     <div className="space-y-2">
-                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 print:text-black ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
+                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
                             <Briefcase size={14} className="print:hidden"/> {t.position}
                         </label>
                         <div className="relative">
@@ -358,31 +367,31 @@
                     </div>
 
                     <div className="space-y-2">
-                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 print:text-black ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
+                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
                             <Calendar size={14} className="print:hidden"/> {t.date}
                         </label>
                         <input 
                             type="date" name="tarikh" value={formData.tarikh}
                             onChange={(e) => updateField('tarikh', e.target.value)}
                             title="Tarikh pemantauan dijalankan"
-                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 print:border-none print:p-0 print:bg-transparent ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
+                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 print:border-none print:p-0 print:font-bold print:bg-transparent ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 print:text-black ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
+                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
                             <Clock size={14} className="print:hidden"/> {t.time}
                         </label>
                         <input 
                             type="time" name="masa" value={formData.masa}
                             onChange={(e) => updateField('masa', e.target.value)}
                             title="Masa pemantauan dijalankan"
-                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 print:border-none print:p-0 print:bg-transparent ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
+                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 print:border-none print:p-0 print:font-bold print:bg-transparent ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
                         />
                     </div>
 
                     <div className="col-span-1 md:col-span-2 space-y-2">
-                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 print:text-black ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
+                        <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
                             <MapPin size={14} className="print:hidden"/> {t.location}
                         </label>
                         <div className="relative">
@@ -444,16 +453,16 @@
             const badge = getBadge(percentage);
 
             return (
-                <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:border-none print:shadow-none print:p-0 print:border-b-2 print:border-dashed print:border-slate-300 print:pb-8 print:mb-8 ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-indigo-50/60 border-indigo-100'}`} style={{animationDelay: "0.1s"}}>
-                    <div className={`mb-6 border-b pb-4 print:border-none print:mb-4 ${isDarkMode ? 'border-slate-600' : 'border-indigo-200'}`}>
+                <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:break-inside-avoid print:mt-4 ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-indigo-50/60 border-indigo-100'}`} style={{animationDelay: "0.1s"}}>
+                    <div className={`mb-6 border-b pb-4 print:mb-4 ${isDarkMode ? 'border-slate-600' : 'border-indigo-200'}`}>
                         <div className="flex justify-between items-center mb-3">
-                            <h3 className={`text-lg font-bold flex items-center gap-2 print:text-black ${isDarkMode ? 'text-indigo-300' : 'text-indigo-900'}`}>
+                            <h3 className={`text-lg font-bold flex items-center gap-2 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-900'}`}>
                                 <span className={`p-1.5 rounded-lg print:hidden ${isDarkMode ? 'bg-slate-600 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}><LayoutGrid size={18} /></span>
                                 {t.sectionA}
                             </h3>
                         </div>
                         
-                        <div className="flex justify-between items-center mb-2 print:hidden">
+                        <div className="flex justify-between items-center mb-2">
                             <span className={`text-xs font-bold px-3 py-1 rounded-full border shadow-sm ${badge.color}`} title="Lencana Pencapaian Markah">
                                 {badge.text} ({percentage}%)
                             </span>
@@ -461,12 +470,12 @@
                                 {t.overall}
                             </p>
                         </div>
-                        <div className={`w-full rounded-full h-3 mb-2 print:hidden ${isDarkMode ? 'bg-slate-600' : 'bg-slate-200'}`}>
-                            <div className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(percentage)}`} style={{ width: `${percentage}%` }}></div>
+                        <div className={`w-full rounded-full h-3 mb-2 ${isDarkMode ? 'bg-slate-600' : 'bg-slate-200'} print:bg-slate-200 print:shadow-inner`}>
+                            <div className={`h-3 rounded-full transition-all duration-500 print:print-color-adjust-exact ${getProgressColor(percentage)}`} style={{ width: `${percentage}%`, WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}></div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2 print:gap-x-8 print:gap-y-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2 print:gap-x-6 print:gap-y-4">
                         {ASPEK_PENILAIAN.map((item) => {
                             const score = formData.skor[item.id];
                             const comment = formData.catatanBahagianA?.[item.id] || '';
@@ -487,10 +496,10 @@
                             }
 
                             return (
-                                <div key={item.id} className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 print:border print:border-gray-300 print:p-2 print:shadow-none print:hover:scale-100 print:break-inside-avoid ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-indigo-100'}`}>
-                                    <div className="flex items-start gap-3 mb-3 print:mb-1">
-                                        <div className={`p-2 rounded-xl shrink-0 print:hidden ${isDarkMode ? item.bgDark : item.bgLight}`}>{item.icon}</div>
-                                        <div><span className={`text-sm font-semibold print:text-black ${isDarkMode ? 'text-slate-200' : 'text-slate-700'}`}>{label}</span></div>
+                                <div key={item.id} className={`p-4 rounded-xl border flex flex-col justify-between shadow-sm hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 print:shadow-none print:hover:scale-100 print:break-inside-avoid ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-indigo-100'}`}>
+                                    <div className="flex items-start gap-3 mb-3">
+                                        <div className={`p-2 rounded-xl shrink-0 ${isDarkMode ? item.bgDark : item.bgLight}`}>{item.icon}</div>
+                                        <div><span className={`text-sm font-semibold ${isDarkMode ? 'text-slate-200' : 'text-slate-700'}`}>{label}</span></div>
                                     </div>
                                     
                                     <div className="flex items-center gap-3 mb-3">
@@ -500,14 +509,14 @@
                                             title={`Laraskan skor untuk ${label}`}
                                             className={`w-full h-2 rounded-lg appearance-none cursor-pointer print:hidden bg-slate-200 ${sliderColorClass}`}
                                         />
-                                        <div className={`w-10 h-10 flex items-center justify-center font-bold rounded-lg border text-lg transition-colors print:border-none print:w-auto print:h-auto print:text-black print:bg-transparent ${boxColorClass}`}>
+                                        <div className={`w-10 h-10 flex items-center justify-center font-bold rounded-lg border text-lg transition-colors ${boxColorClass}`}>
                                             {score === 0 ? '-' : score}
                                         </div>
                                     </div>
 
                                     {/* Ruang Catatan Per Aspek */}
                                     <div className="mt-2 pt-2 border-t border-dashed border-gray-200 print:border-slate-300">
-                                        <label className={`text-xs font-semibold mb-1 block flex items-center gap-1 print:text-black ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                        <label className={`text-xs font-semibold mb-1 flex items-center gap-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                                             <MessageSquare size={10} className="print:hidden"/> {t.aspectNote}:
                                         </label>
                                         <input 
@@ -516,7 +525,7 @@
                                             onChange={(e) => updateAspectComment(item.id, e.target.value)}
                                             placeholder={t.aspectNotePlaceholder}
                                             title={`Tambah ulasan ringkas untuk ${label}`}
-                                            className={`w-full text-xs p-2 rounded-lg border focus:ring-1 focus:ring-blue-300 transition-all print:border-none print:p-0 print:bg-transparent print:text-xs print:italic ${isDarkMode ? 'bg-slate-900 border-slate-600 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
+                                            className={`w-full text-xs p-2 rounded-lg border focus:ring-1 focus:ring-blue-300 transition-all print:border-none print:p-0 print:bg-transparent print:italic ${isDarkMode ? 'bg-slate-900 border-slate-600 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'}`}
                                         />
                                     </div>
                                 </div>
@@ -524,27 +533,27 @@
                         })}
                     </div>
 
-                    <div className={`mt-6 pt-4 border-t flex justify-between items-center print:mt-2 print:pt-2 print:border-slate-300 ${isDarkMode ? 'border-slate-600' : 'border-indigo-200'}`}>
-                        <span className={`font-bold uppercase text-sm print:text-black ${isDarkMode ? 'text-indigo-300' : 'text-indigo-900'}`}>{t.totalScore}</span>
-                        <span className={`font-bold text-lg print:text-black ${isDarkMode ? 'text-indigo-300' : 'text-indigo-900'}`}>{totalScore} / {maxScore}</span>
+                    <div className={`mt-6 pt-4 border-t flex justify-between items-center print:border-slate-300 ${isDarkMode ? 'border-slate-600' : 'border-indigo-200'}`}>
+                        <span className={`font-bold uppercase text-sm ${isDarkMode ? 'text-indigo-300' : 'text-indigo-900'}`}>{t.totalScore}</span>
+                        <span className={`font-bold text-lg ${isDarkMode ? 'text-indigo-300' : 'text-indigo-900'}`}>{totalScore} / {maxScore}</span>
                     </div>
                 </section>
             );
         };
 
         const CommentsSection = ({ formData, updateField, t, isDarkMode }) => (
-            <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:border-none print:shadow-none print:p-0 ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-green-50/60 border-green-100'}`} style={{animationDelay: "0.2s"}}>
-                <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 border-b pb-2 print:border-none print:mb-2 print:text-black ${isDarkMode ? 'text-green-300 border-slate-600' : 'text-green-800 border-green-200'}`}>
+            <section className={`animate-slideUp p-6 rounded-2xl border shadow-sm transition-all print:break-inside-avoid print:mt-4 ${isDarkMode ? 'bg-slate-700/50 border-slate-600' : 'bg-green-50/60 border-green-100'}`} style={{animationDelay: "0.2s"}}>
+                <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 border-b pb-2 print:mb-2 ${isDarkMode ? 'text-green-300 border-slate-600' : 'text-green-800 border-green-200'}`}>
                     <span className={`p-1.5 rounded-lg print:hidden ${isDarkMode ? 'bg-slate-600 text-green-300' : 'bg-green-100 text-green-600'}`}><FileText size={18} /></span>
                     {t.comments}
                 </h3>
-                <div className={`p-1 rounded-xl border shadow-inner print:border-black print:p-0 print:shadow-none focus-within:ring-2 focus-within:ring-green-400 transition-shadow ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-green-200'}`}>
+                <div className={`p-1 rounded-xl border shadow-inner print:border-none print:p-0 print:shadow-none focus-within:ring-2 focus-within:ring-green-400 transition-shadow ${isDarkMode ? 'bg-slate-800 border-slate-600' : 'bg-white border-green-200'}`}>
                     <textarea
                         name="ulasan" value={formData.ulasan}
                         onChange={(e) => updateField('ulasan', e.target.value)}
                         rows="6" maxLength={500} placeholder={t.commentPlaceholder}
                         title="Ulasan keseluruhan atau perkara berbangkit"
-                        className={`w-full p-4 rounded-lg focus:ring-0 focus:outline-none resize-none leading-relaxed bg-transparent print:text-sm print:h-32 ${isDarkMode ? 'text-slate-100 placeholder-slate-500' : 'text-slate-700 placeholder-slate-400'}`}
+                        className={`w-full p-4 rounded-lg focus:ring-0 focus:outline-none resize-none leading-relaxed bg-transparent print:text-sm print:p-0 print:h-24 ${isDarkMode ? 'text-slate-100 placeholder-slate-500' : 'text-slate-700 placeholder-slate-400'}`}
                     ></textarea>
                 </div>
                 <div className="flex justify-end mt-2 print:hidden">
@@ -553,7 +562,7 @@
             </section>
         );
 
-        const FooterSection = ({ formData, actions, t, isDarkMode }) => (
+        const FooterSection = ({ formData, t, isDarkMode }) => (
             <React.Fragment>
                 <div className="hidden print:flex justify-center items-end mt-12 pt-8 no-break">
                     <div className="text-center w-1/2">
@@ -575,8 +584,8 @@
 
         const ActionButtons = ({ actions, t, isDarkMode, isSaving }) => (
             <div className={`animate-slideUp p-6 flex flex-wrap justify-end gap-3 border-t print:hidden ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-gray-50 border-gray-100'}`} style={{animationDelay: "0.3s"}}>
-                <button onClick={actions.handleReset} title="Kosongkan semula borang" className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-transform duration-300 hover:scale-105 hover:shadow-xl active:scale-95 font-semibold ${isDarkMode ? 'bg-slate-600 text-slate-200 hover:bg-slate-500' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}`}>
-                    <RefreshCw size={18} /> {t.reset}
+                <button onClick={actions.handleNewForm} title="Buka borang kosong baru" className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-transform duration-300 hover:scale-105 hover:shadow-xl active:scale-95 font-semibold ${isDarkMode ? 'bg-slate-600 text-slate-200 hover:bg-slate-500' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}`}>
+                    <FilePlus size={18} /> {t.newForm}
                 </button>
                 <button 
                     onClick={actions.handleSave} 
@@ -597,15 +606,122 @@
             </div>
         );
 
+        // --- NEW REPORT MODAL COMPONENT (Popup View) ---
+        const ReportModal = ({ report, onClose, t, isDarkMode, showToast, refreshList }) => {
+            const [formData, setFormData] = useState(report);
+            const [isSaving, setIsSaving] = useState(false);
+
+            const updateField = (name, value) => setFormData(prev => ({ ...prev, [name]: value }));
+            const updateScore = (id, value) => setFormData(prev => ({...prev, skor: {...prev.skor, [id]: parseInt(value)}}));
+            const updateAspectComment = (id, value) => setFormData(prev => ({...prev, catatanBahagianA: {...prev.catatanBahagianA, [id]: value}}));
+
+            const calculations = useMemo(() => {
+                const totalScore = Object.values(formData.skor).reduce((a, b) => a + b, 0);
+                const maxScore = ASPEK_PENILAIAN.length * 5;
+                const percentage = Math.round((totalScore / maxScore) * 100);
+                return { totalScore, maxScore, percentage };
+            }, [formData.skor]);
+
+            const handleUpdate = async () => {
+                if (!formData.namaPentadbir.trim()) { showToast(t.validationName, 'error'); return; }
+                if (!formData.jawatan) { showToast("Sila pilih Jawatan pentadbir.", 'error'); return; }
+                if (Object.values(formData.skor).includes(0)) { showToast("Sila lengkapkan skor (1-5) untuk semua aspek pemantauan.", 'error'); return; }
+                
+                setIsSaving(true);
+                try {
+                    const payload = {
+                        action: 'update',
+                        data: {
+                            id: formData.id,
+                            nama_pentadbir: formData.namaPentadbir,
+                            jawatan: formData.jawatan,
+                            tarikh: formData.tarikh,
+                            masa: formData.masa,
+                            lokasi: formData.lokasi,
+                            lokasi_catatan: formData.lokasiCatatan,
+                            skor: formData.skor,
+                            catatan_bahagian_a: formData.catatanBahagianA,
+                            ulasan: formData.ulasan
+                        }
+                    };
+
+                    const response = await fetch(GAS_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload),
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                    });
+                    
+                    const result = await response.json();
+                    if (result.status !== 'success') throw new Error(result.message);
+                    
+                    showToast("Laporan berjaya dikemaskini!", 'success');
+                    refreshList(); // Reload senarai
+                    onClose(); // Tutup modal
+                } catch (error) { 
+                    console.error('Ralat:', error); 
+                    showToast(`Gagal mengemaskini: ${error.message}`, 'error'); 
+                } 
+                finally { setIsSaving(false); }
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 flex justify-center items-start bg-slate-900/60 backdrop-blur-sm overflow-y-auto p-4 md:p-8 print:static print:bg-white print:p-0 print:block">
+                    <div className={`w-full max-w-[210mm] mx-auto shadow-2xl rounded-2xl overflow-hidden animate-slideUp relative print:shadow-none print:w-[210mm] print:rounded-none print-frame ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                        
+                        {/* Butang Tutup Modal */}
+                        <button onClick={onClose} className="absolute top-4 right-4 z-50 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg print:hidden" title="Tutup Paparan">
+                            <XIcon size={20} />
+                        </button>
+
+                        <HeaderSection t={t} isDarkMode={isDarkMode} />
+                        
+                        <div className="p-8 space-y-8 print:p-0 print:space-y-0">
+                            {/* Alert Mode Kemaskini */}
+                            <div className="bg-yellow-100 text-yellow-800 p-4 rounded-xl font-medium flex items-center justify-center gap-2 print:hidden border border-yellow-300 shadow-sm animate-pulse">
+                                <EditIcon size={20} /> Anda sedang dalam Mod Kemaskini Laporan.
+                            </div>
+
+                            <AdminInfoForm formData={formData} updateField={updateField} t={t} isDarkMode={isDarkMode} />
+                            <ScoreTable formData={formData} updateScore={updateScore} updateAspectComment={updateAspectComment} t={t} isDarkMode={isDarkMode} calculations={calculations} />
+                            <CommentsSection formData={formData} updateField={updateField} t={t} isDarkMode={isDarkMode} />
+                            <FooterSection formData={formData} t={t} isDarkMode={isDarkMode} />
+                        </div>
+
+                        <div className={`p-6 flex flex-wrap justify-end gap-3 border-t print:hidden ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-gray-50 border-gray-100'}`}>
+                            <button onClick={onClose} title="Batal perubahan dan tutup paparan" className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-transform duration-300 hover:scale-105 hover:shadow-xl active:scale-95 font-semibold ${isDarkMode ? 'bg-slate-600 text-slate-200 hover:bg-slate-500' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}`}>
+                                Batal & Tutup
+                            </button>
+                            <button 
+                                onClick={handleUpdate} 
+                                disabled={isSaving}
+                                title="Simpan perubahan laporan ini ke pangkalan data"
+                                className={`flex items-center gap-2 px-5 py-2.5 text-white rounded-xl shadow-lg transition-transform duration-300 active:scale-95 font-semibold ${isSaving ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 hover:scale-105 hover:shadow-xl'}`}
+                            >
+                                {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} 
+                                {isSaving ? 'Menyimpan...' : t.update}
+                            </button>
+                            <button 
+                                onClick={() => window.print()} 
+                                title="Cetak format rasmi atau simpan sebagai PDF"
+                                className="flex items-center gap-2 px-6 py-2.5 text-white bg-gradient-to-r from-blue-700 to-blue-500 rounded-xl hover:from-blue-800 hover:to-blue-600 hover:shadow-xl hover:scale-105 transition-transform duration-300 font-semibold active:scale-95"
+                            >
+                                <Printer size={18} /> {t.print}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         // --- NEW REPORT LIST TAB COMPONENT ---
-        const ReportListComponent = ({ onSelectReport, t, isDarkMode, onShowToast }) => {
+        const ReportListComponent = ({ onEditReport, t, isDarkMode, onShowToast, refreshCounter }) => {
             const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
             const [reports, setReports] = useState([]);
             const [loading, setLoading] = useState(false);
 
             useEffect(() => {
                 fetchReports();
-            }, [selectedDate]);
+            }, [selectedDate, refreshCounter]);
 
             const fetchReports = async () => {
                 setLoading(true);
@@ -646,6 +762,7 @@
             };
 
             const mapDbToState = (dbRecord) => ({
+                id: dbRecord.id, // Penting untuk fungsi Update
                 namaPentadbir: dbRecord.nama_pentadbir,
                 jawatan: dbRecord.jawatan,
                 tarikh: dbRecord.tarikh,
@@ -694,11 +811,11 @@
                                     </div>
                                     <div className="flex gap-2">
                                         <button 
-                                            onClick={() => onSelectReport(mapDbToState(report))}
-                                            title="Papar dan cetak laporan ini"
-                                            className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 shadow-sm transition-transform duration-300 hover:scale-105 font-medium text-sm"
+                                            onClick={() => onEditReport(mapDbToState(report))}
+                                            title="Kemaskini dan cetak laporan ini"
+                                            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 shadow-sm transition-transform duration-300 hover:scale-105 font-medium text-sm"
                                         >
-                                            <Eye size={16}/> Papar
+                                            <EditIcon size={16}/> Kemaskini
                                         </button>
                                         <button 
                                             onClick={() => handleDelete(report.id)}
@@ -717,7 +834,7 @@
         };
 
         // --- NEW CALENDAR TAB COMPONENT ---
-        const CalendarTabComponent = ({ onSelectReport, t, isDarkMode, onShowToast }) => {
+        const CalendarTabComponent = ({ onEditReport, t, isDarkMode, onShowToast, refreshCounter }) => {
             const [selectedMonth, setSelectedMonth] = useState(() => {
                 const d = new Date();
                 return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -728,7 +845,7 @@
 
             useEffect(() => {
                 fetchMonthlyReports();
-            }, [selectedMonth]);
+            }, [selectedMonth, refreshCounter]);
 
             const fetchMonthlyReports = async () => {
                 setLoading(true);
@@ -770,6 +887,7 @@
             };
 
             const mapDbToState = (dbRecord) => ({
+                id: dbRecord.id, // Penting untuk fungsi Update
                 namaPentadbir: dbRecord.nama_pentadbir,
                 jawatan: dbRecord.jawatan,
                 tarikh: dbRecord.tarikh,
@@ -888,11 +1006,11 @@
                                         </div>
                                         <div className="flex gap-2">
                                             <button 
-                                                onClick={() => onSelectReport(mapDbToState(report))}
-                                                title="Papar dan cetak"
-                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 text-white rounded-lg hover:bg-teal-600 shadow-sm transition-transform duration-300 hover:scale-105 font-medium text-xs"
+                                                onClick={() => onEditReport(mapDbToState(report))}
+                                                title="Kemaskini dan cetak"
+                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 shadow-sm transition-transform duration-300 hover:scale-105 font-medium text-xs"
                                             >
-                                                <Eye size={14}/> Papar
+                                                <EditIcon size={14}/> Kemaskini
                                             </button>
                                             <button 
                                                 onClick={() => handleDelete(report.id)}
@@ -933,6 +1051,10 @@
             const [isDarkMode, setIsDarkMode] = useState(false);
             const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
             const [isSaving, setIsSaving] = useState(false);
+            
+            // Pengurusan Mod Kemaskini (Modal Popup)
+            const [editingReport, setEditingReport] = useState(null);
+            const [refreshCounter, setRefreshCounter] = useState(0); 
 
             const t = TRANSLATIONS[lang];
 
@@ -941,7 +1063,13 @@
             };
             const updateScore = (id, value) => setFormData(prev => ({...prev, skor: {...prev.skor, [id]: parseInt(value)}}));
             const updateAspectComment = (id, value) => setFormData(prev => ({...prev, catatanBahagianA: {...prev.catatanBahagianA, [id]: value}}));
-            const handleReset = () => { if(window.confirm(t.resetConfirm)) setFormData(getInitialData()); };
+            
+            const handleNewForm = () => { 
+                if(window.confirm(t.newFormConfirm)) {
+                    setFormData(getInitialData()); 
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            };
             
             const generateUniqueId = () => {
                 if (typeof window !== 'undefined' && window.crypto && window.crypto.randomUUID) {
@@ -983,6 +1111,9 @@
                     if (result.status !== 'success') throw new Error(result.message);
                     
                     showToast(t.saveSuccess, 'success');
+                    // Reset lepas simpan
+                    setFormData(getInitialData());
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 } catch (error) { 
                     console.error('Ralat:', error); 
                     showToast(`${t.saveError} (${error.message})`, 'error'); 
@@ -998,38 +1129,47 @@
                 return { totalScore, maxScore, percentage };
             }, [formData.skor]);
 
-            const loadReportForPrinting = (data) => {
-                setFormData(data);
-                setActiveTab('input'); 
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                showToast("Laporan dimuatkan. Sila tekan butang Cetak di bawah.", "success");
+            const loadReportForEditing = (data) => {
+                setEditingReport(data);
             };
 
-            const actions = { setLang, setIsDarkMode, setToast: showToast, closeToast: () => setToast(prev => ({ ...prev, show: false })), updateField, updateScore, updateAspectComment, handleSave, handleReset };
+            const actions = { setLang, setIsDarkMode, setToast: showToast, closeToast: () => setToast(prev => ({ ...prev, show: false })), updateField, updateScore, updateAspectComment, handleSave, handleNewForm };
 
             return (
                 <React.Fragment>
                     <GradientDefs />
                     <Toast message={toast.message} type={toast.type} isVisible={toast.show} onClose={actions.closeToast} />
 
-                    <div className={`min-h-screen p-4 md:p-8 transition-colors duration-500 ease-in-out ${isDarkMode ? 'dark-pattern text-slate-100' : 'school-pattern text-slate-700'}`}>
+                    {/* Jika Butang Kemaskini ditekan, Buka Popup Modal */}
+                    {editingReport && (
+                        <ReportModal 
+                            report={editingReport} 
+                            onClose={() => setEditingReport(null)} 
+                            t={t} 
+                            isDarkMode={isDarkMode} 
+                            showToast={showToast}
+                            refreshList={() => setRefreshCounter(prev => prev + 1)}
+                        />
+                    )}
+
+                    {/* Skrin Utama (Akan disembunyikan waktu print jika modal popup sedang terbuka) */}
+                    <div className={`min-h-screen p-4 md:p-8 transition-colors duration-500 ease-in-out ${isDarkMode ? 'dark-pattern text-slate-100' : 'school-pattern text-slate-700'} ${editingReport ? 'print:hidden' : ''}`}>
                         
                         <div className="fixed top-4 right-4 z-40 flex gap-2 print:hidden">
                             <button onClick={() => setLang(l => l === 'bm' ? 'en' : 'bm')} title="Tukar Bahasa" className={`p-2 rounded-full shadow-lg transition-transform duration-300 hover:scale-110 hover:shadow-xl ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-slate-700'}`}><Globe size={16}/></button>
                             <button onClick={() => setIsDarkMode(!isDarkMode)} title="Tukar Mod Gelap/Terang" className={`p-2 rounded-full shadow-lg transition-transform duration-300 hover:scale-110 hover:shadow-xl ${isDarkMode ? 'bg-yellow-400 text-slate-900' : 'bg-slate-700 text-white'}`}>{isDarkMode ? <Sun size={18}/> : <Moon size={18}/>}</button>
                         </div>
 
-                        <div className={`max-w-[210mm] mx-auto shadow-2xl rounded-2xl overflow-hidden animate-enter transition-colors duration-300 print:shadow-none print:max-w-full print:rounded-none print-frame ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                        <div className={`max-w-[210mm] mx-auto shadow-2xl rounded-2xl overflow-hidden animate-enter transition-colors duration-300 print:shadow-none print:w-[210mm] print:rounded-none ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
                             
                             <HeaderSection t={t} isDarkMode={isDarkMode} />
 
                             <div className="flex border-b border-gray-200 print:hidden overflow-x-auto px-4 pt-2">
-                                {/* Tab Aktif kini berwarna padu dan lebih menonjol */}
                                 <button 
                                     onClick={() => setActiveTab('input')}
                                     className={`flex-1 min-w-[120px] py-3 rounded-t-xl font-bold text-sm flex items-center justify-center gap-1 md:gap-2 transition-all duration-300 ${activeTab === 'input' ? (isDarkMode ? 'bg-teal-600 text-white shadow-inner border-t-2 border-teal-400' : 'bg-teal-500 text-white shadow-inner border-t-2 border-teal-300') : (isDarkMode ? 'bg-slate-800 text-slate-400 hover:bg-slate-700' : 'bg-white text-slate-500 hover:bg-slate-50')}`}
                                 >
-                                    <PenTool size={16}/> <span className="hidden md:inline">Borang Baru / Paparan</span><span className="md:hidden">Borang</span>
+                                    <PenTool size={16}/> <span className="hidden md:inline">Borang Baru</span><span className="md:hidden">Borang</span>
                                 </button>
                                 <button 
                                     onClick={() => setActiveTab('list')}
@@ -1051,14 +1191,14 @@
                                         <AdminInfoForm formData={formData} updateField={actions.updateField} t={t} isDarkMode={isDarkMode} />
                                         <ScoreTable formData={formData} updateScore={actions.updateScore} updateAspectComment={actions.updateAspectComment} t={t} isDarkMode={isDarkMode} calculations={calculations} />
                                         <CommentsSection formData={formData} updateField={actions.updateField} t={t} isDarkMode={isDarkMode} />
-                                        <FooterSection formData={formData} actions={actions} t={t} isDarkMode={isDarkMode} />
+                                        <FooterSection formData={formData} t={t} isDarkMode={isDarkMode} />
                                     </div>
                                     <ActionButtons actions={actions} t={t} isDarkMode={isDarkMode} isSaving={isSaving} />
                                 </React.Fragment>
                             ) : activeTab === 'list' ? (
-                                <ReportListComponent onSelectReport={loadReportForPrinting} t={t} isDarkMode={isDarkMode} onShowToast={showToast} />
+                                <ReportListComponent onEditReport={loadReportForEditing} t={t} isDarkMode={isDarkMode} onShowToast={showToast} refreshCounter={refreshCounter} />
                             ) : (
-                                <CalendarTabComponent onSelectReport={loadReportForPrinting} t={t} isDarkMode={isDarkMode} onShowToast={showToast} />
+                                <CalendarTabComponent onEditReport={loadReportForEditing} t={t} isDarkMode={isDarkMode} onShowToast={showToast} refreshCounter={refreshCounter} />
                             )}
                         </div>
                         
