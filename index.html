@@ -293,7 +293,7 @@
         };
 
         const HeaderSection = ({ t, isDarkMode }) => (
-            <div className="bg-gradient-to-r from-sky-500 via-teal-400 to-lime-400 text-white p-6 relative overflow-hidden print:mb-2 print:p-4 print:rounded-xl">
+            <div className="bg-gradient-to-r from-sky-500 via-teal-400 to-lime-400 text-white p-6 relative overflow-hidden print:mb-4 print:p-4 print:rounded-xl">
                 {/* Latar Belakang SVG Pendidikan */}
                 <div className="absolute top-[-20px] right-[-10px] opacity-20 pointer-events-none transform rotate-12 print:opacity-30">
                     <BookOpen size={180} />
@@ -333,16 +333,21 @@
                         <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 print:text-slate-500 ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
                             {t.name}
                         </label>
+                        {/* Paparan Skrin */}
                         <select 
                             name="namaPentadbir" 
                             value={formData.namaPentadbir}
                             onChange={(e) => updateField('namaPentadbir', e.target.value)}
                             title="Sila pilih nama pentadbir yang menjalankan pemantauan"
-                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer print:border-none print:border-b print:border-dashed print:border-slate-400 print:rounded-none print:p-0 print:font-bold print:bg-transparent ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white hover:bg-slate-700' : 'bg-white border-blue-200 hover:bg-blue-50'}`}
+                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer print:hidden ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white hover:bg-slate-700' : 'bg-white border-blue-200 hover:bg-blue-50'}`}
                         >
                             <option value="">Sila Pilih Nama...</option>
                             {ADMIN_LIST.map((name) => <option key={name} value={name}>{name}</option>)}
                         </select>
+                        {/* Paparan Cetak */}
+                        <div className="hidden print:block font-bold text-black border-b border-dashed border-slate-400 pb-1">
+                            {formData.namaPentadbir || '-'}
+                        </div>
                     </div>
 
                     <div className="space-y-1">
@@ -353,7 +358,7 @@
                             name="jawatan" value={formData.jawatan}
                             onChange={(e) => updateField('jawatan', e.target.value)}
                             title="Pilih jawatan pentadbir"
-                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer print:border-none print:border-b print:border-dashed print:border-slate-400 print:rounded-none print:p-0 print:font-bold print:bg-transparent ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white hover:bg-slate-700' : 'bg-white border-blue-200 hover:bg-blue-50'}`}
+                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer print:hidden ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white hover:bg-slate-700' : 'bg-white border-blue-200 hover:bg-blue-50'}`}
                         >
                             <option value="">Sila Pilih Jawatan...</option>
                             <option value="Guru Besar">Guru Besar</option>
@@ -362,6 +367,9 @@
                             <option value="PK Kokurikulum">PK Kokurikulum</option>
                             <option value="PK PPKI">PK PPKI</option>
                         </select>
+                        <div className="hidden print:block font-bold text-black border-b border-dashed border-slate-400 pb-1">
+                            {formData.jawatan || '-'}
+                        </div>
                     </div>
 
                     <div className="space-y-1">
@@ -371,8 +379,11 @@
                         <input 
                             type="date" name="tarikh" value={formData.tarikh}
                             onChange={(e) => updateField('tarikh', e.target.value)}
-                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 print:border-none print:border-b print:border-dashed print:border-slate-400 print:rounded-none print:p-0 print:font-bold print:bg-transparent ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
+                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 print:hidden ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
                         />
+                        <div className="hidden print:block font-bold text-black border-b border-dashed border-slate-400 pb-1">
+                            {formData.tarikh ? new Date(formData.tarikh).toLocaleDateString('ms-MY') : '-'}
+                        </div>
                     </div>
 
                     <div className="space-y-1">
@@ -382,8 +393,12 @@
                         <input 
                             type="time" name="masa" value={formData.masa}
                             onChange={(e) => updateField('masa', e.target.value)}
-                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 print:border-none print:border-b print:border-dashed print:border-slate-400 print:rounded-none print:p-0 print:font-bold print:bg-transparent ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
+                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 print:hidden ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
                         />
+                        {/* PENYELESAIAN UTAMA ISU MASA HILANG KETIKA PRINT */}
+                        <div className="hidden print:block font-bold text-black border-b border-dashed border-slate-400 pb-1">
+                            {formData.masa || '-'}
+                        </div>
                     </div>
 
                     <div className="col-span-1 md:col-span-2 print:col-span-2 space-y-1">
@@ -393,11 +408,14 @@
                         <select
                             name="lokasi" value={formData.lokasi}
                             onChange={(e) => updateField('lokasi', e.target.value)}
-                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer print:border-none print:border-b print:border-dashed print:border-slate-400 print:rounded-none print:p-0 print:font-bold print:bg-transparent ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white hover:bg-slate-700' : 'bg-white border-blue-200 hover:bg-blue-50'}`}
+                            className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 appearance-none cursor-pointer print:hidden ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white hover:bg-slate-700' : 'bg-white border-blue-200 hover:bg-blue-50'}`}
                         >
                             <option value="">Sila Pilih Lokasi...</option>
                             {LOCATION_LIST.map((loc) => <option key={loc} value={loc}>{loc}</option>)}
                         </select>
+                        <div className={`hidden print:block font-bold text-black border-b border-dashed border-slate-400 pb-1 ${formData.lokasiCatatan ? 'print:border-none print:pb-0' : ''}`}>
+                            {formData.lokasi || '-'}
+                        </div>
 
                         {/* Input Tambahan untuk Catatan */}
                         {["Kawasan Lain", "Kelas", "Bilik Khas", "Tandas"].includes(formData.lokasi) && (
@@ -406,8 +424,11 @@
                                     type="text" name="lokasiCatatan" value={formData.lokasiCatatan || ''}
                                     onChange={(e) => updateField('lokasiCatatan', e.target.value)}
                                     placeholder="Sila nyatakan secara spesifik..."
-                                    className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 transition-all print:border-none print:p-0 print:font-bold print:bg-transparent print:italic ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
+                                    className={`w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-400 transition-all print:hidden ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-blue-200'}`}
                                 />
+                                <div className="hidden print:block font-bold text-black border-b border-dashed border-slate-400 pb-1 pt-1 italic">
+                                    {formData.lokasiCatatan ? `(Perincian: ${formData.lokasiCatatan})` : ''}
+                                </div>
                             </div>
                         )}
                     </div>
